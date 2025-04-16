@@ -12,8 +12,8 @@ This is a desktop application using Python (Tkinter) and MySQL that allows role-
 
 ## Setup
 1. Import schema.sql into MySQL
-2. Update DB credentials in `app.py`
-3. Run using `python app.py`
+2. Update DB credentials in `project.py`
+3. Run using `python project.py`
 
 ## Roles
 | Username   | Password   | Role    |
