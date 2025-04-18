@@ -1,23 +1,39 @@
-# ClinicManagementSystem
-# Clinic Management System
+# 🏥 Clinic Management System
 
-This is a desktop application using Python (Tkinter) and MySQL that allows role-based management of a clinic's patients, doctors, and nurses.
+A role-based desktop application built with **Python (Tkinter)** and **MySQL** that streamlines the management of patients, doctors, nurses, appointments, and prescriptions in a clinic setting.
 
 ## Features
-- Login with roles: admin1 / doctor / nurse
-- Tabbed UI with role-restricted controls
-- Admin-only: add, delete, export to CSV
-- Search by name and gender
-- Responsive UI and visual feedback
 
-## Setup
-1. Import schema.sql into MySQL
-2. Update DB credentials in `project.py`
-3. Run using `python project.py`
+-  Role-based Login System (Admin, Doctor, Nurse)
+-  Tabbed Interface for managing:
+  - Patients
+  - Doctors
+  - Nurses
+  - Appointments
+  - Prescriptions
+-  Search by Name and Gender or by ID (for appointments/prescriptions)
+-  Read-Only and Editable Fields based on role
+-  Admin-Only CSV Export and record management (Add/Delete)
+-  Data Entry Forms with date pickers, dropdowns, and validation
+-  Clean and responsive Tkinter UI
 
-## Roles
-| Username   | Password   | Role    |
-|------------|------------|---------|
-| admin1     | adminpass  | admin   |
-| drjones    | docpass    | doctor  |
-| nurseamy   | nursepass  | nurse   |
+##  Tech Stack
+
+- Frontend: Python Tkinter, Ttk, Tkcalendar
+- Backend: MySQL (with `mysql-connector-python`)
+- Database: Predefined schema (`clinic` database with required tables)
+
+##  Default Roles & Credentials
+
+| Role   | Username | Password   |
+|--------|----------|------------|
+| Admin  | admin1   | adminpass  |
+| Doctor | drjones  | docpass    |
+| Nurse  | nurseamy | nursepass  |
+
+## Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/ClinicManagementSystem.git
+cd ClinicManagementSystem
