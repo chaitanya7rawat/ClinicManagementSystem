@@ -9,7 +9,7 @@ def connect_db():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="VCCcst2000!",
+        password="TanKum090705",  # <--- your mysql password
         database="clinic"
     )
 
@@ -34,147 +34,144 @@ def show_login():
 
     login_window = tk.Tk()
     login_window.title("Clinic Login")
-    login_window.geometry("350x200")
-    login_window.configure(bg="#f0f8ff")
+    login_window.geometry("360x240")
+    login_window.configure(bg="#e0e0e0")
     login_window.resizable(False, False)
 
-    tk.Label(login_window, text="Clinic Login", font=("Arial", 16, "bold"), bg="#f0f8ff", fg="#333").pack(pady=10)
+    tk.Label(login_window, text="Clinic Login", font=("Arial", 16, "bold"), bg="#e0e0e0", fg="#333").pack(pady=10)
 
-    form_frame = tk.Frame(login_window, bg="#f0f8ff")
+    form_frame = tk.Frame(login_window, bg="#e0e0e0")
     form_frame.pack(pady=10)
 
-    tk.Label(form_frame, text="Username:", bg="#f0f8ff", font=("Arial", 10)).grid(row=0, column=0, padx=10, pady=5, sticky="e")
-    entry_username = tk.Entry(form_frame, width=25)
+    tk.Label(form_frame, text="Username:", bg="#e0e0e0", font=("Arial", 11)).grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    entry_username = tk.Entry(form_frame, font=("Arial", 11), width=25)
     entry_username.grid(row=0, column=1, pady=5)
 
-    tk.Label(form_frame, text="Password:", bg="#f0f8ff", font=("Arial", 10)).grid(row=1, column=0, padx=10, pady=5, sticky="e")
-    entry_password = tk.Entry(form_frame, show="*", width=25)
+    tk.Label(form_frame, text="Password:", bg="#e0e0e0", font=("Arial", 11)).grid(row=1, column=0, padx=10, pady=5, sticky="e")
+    entry_password = tk.Entry(form_frame, show="*", font=("Arial", 11), width=25)
     entry_password.grid(row=1, column=1, pady=5)
 
-    tk.Button(login_window, text="Login", command=login, bg="#007acc", fg="white", width=20).pack(pady=10)
+    tk.Button(login_window, text="Login", command=login, bg="#007acc", fg="white", font=("Arial", 11, "bold"), width=20).pack(pady=10)
 
     login_window.mainloop()
-
 # --- Dashboard Window ---
 def show_dashboard(username, role):
     db = connect_db()
     cursor = db.cursor()
 
     root = tk.Tk()
-    root.title(f"{role.capitalize()} Dashboard")
-    root.geometry("1080x650")
-    root.configure(bg="#ffffff")
-
-    style = ttk.Style()
-    style.theme_use("default")
-    style.configure("Treeview.Heading", font=("Arial", 10, "bold"))
-    style.configure("Treeview", font=("Arial", 10), rowheight=25)
-
-    notebook = ttk.Notebook(root)
-    notebook.pack(fill="both", expand=True)
-
-    tab_patient = tk.Frame(notebook, bg="#f0f8ff")
-    tab_doctor = tk.Frame(notebook, bg="#f0f8ff")
-    tab_nurse = tk.Frame(notebook, bg="#f0f8ff")
-
-    notebook.add(tab_patient, text="Patients")
-    notebook.add(tab_doctor, text="Doctors")
-    notebook.add(tab_nurse, text="Nurses")
-
-    def logout():
-        root.destroy()
-        show_login()
-
-    # Removed redundant login_window definition
-    pass  # No additional login window logic is needed here
-
-# --- Dashboard ---
-def show_dashboard(username, role):
-    db = connect_db()
-    cursor = db.cursor()
-
-    root = tk.Tk()
     root.title(f"{role.capitalize()} Dashboard - Logged in as {username}")
-    root.geometry("1100x620")
-    root.configure(bg="#f7f9fb")
+    root.geometry("1200x750")
+    root.configure(bg="#e0e0e0")
 
     notebook = ttk.Notebook(root)
     notebook.pack(fill="both", expand=True)
 
-    tab_patient = tk.Frame(notebook, bg="#f7f9fb")
-    tab_doctor = tk.Frame(notebook, bg="#f7f9fb")
-    tab_nurse = tk.Frame(notebook, bg="#f7f9fb")
+    tab_patient = tk.Frame(notebook, bg="#e0e0e0")
+    tab_doctor = tk.Frame(notebook, bg="#e0e0e0")
+    tab_nurse = tk.Frame(notebook, bg="#e0e0e0")
+    tab_appointment = tk.Frame(notebook, bg="#e0e0e0")
+    tab_prescription = tk.Frame(notebook, bg="#e0e0e0")
 
     notebook.add(tab_patient, text="Patients")
     notebook.add(tab_doctor, text="Doctors")
     notebook.add(tab_nurse, text="Nurses")
+    notebook.add(tab_appointment, text="Appointments")
+    notebook.add(tab_prescription, text="Prescriptions")
 
     def logout():
         root.destroy()
         show_login()
-
-    def create_form(tab, fields, table):
+    # --- Universal Form Builder ---
+    def create_form(tab, fields, table, special_type=None):
         entries = {}
-
         search_var = tk.StringVar()
         gender_var = tk.StringVar(value="All")
 
-        search_frame = tk.Frame(tab, bg="#f7f9fb")
+        search_frame = tk.Frame(tab, bg="#e0e0e0")
         search_frame.grid(row=0, column=0, columnspan=4, sticky="w", pady=5)
 
-        tk.Label(search_frame, text="Search by Name:", bg="#f7f9fb").grid(row=0, column=0, padx=5)
-        tk.Entry(search_frame, textvariable=search_var, width=20).grid(row=0, column=1)
+        if special_type == "appointments":
+            tk.Label(search_frame, text="Search by Patient ID:", bg="#e0e0e0", font=("Arial", 11)).grid(row=0, column=0, padx=5)
+            tk.Entry(search_frame, textvariable=search_var, font=("Arial", 11), width=20).grid(row=0, column=1)
+        elif special_type == "prescriptions":
+            tk.Label(search_frame, text="Search by Appointment ID:", bg="#e0e0e0", font=("Arial", 11)).grid(row=0, column=0, padx=5)
+            tk.Entry(search_frame, textvariable=search_var, font=("Arial", 11), width=20).grid(row=0, column=1)
+        else:
+            tk.Label(search_frame, text="Search by Name:", bg="#e0e0e0", font=("Arial", 11)).grid(row=0, column=0, padx=5)
+            tk.Entry(search_frame, textvariable=search_var, font=("Arial", 11), width=20).grid(row=0, column=1)
 
-        tk.Label(search_frame, text="Gender:", bg="#f7f9fb").grid(row=0, column=2, padx=5)
+        tk.Label(search_frame, text="Gender:", bg="#e0e0e0", font=("Arial", 11)).grid(row=0, column=2, padx=5)
         gender_combo = ttk.Combobox(search_frame, textvariable=gender_var, values=["All", "Male", "Female", "Other"], width=12)
         gender_combo.grid(row=0, column=3)
         gender_combo.current(0)
 
         def search():
-            name_filter = search_var.get().strip()
-            gender_filter = gender_var.get()
             for row in tree.get_children():
                 tree.delete(row)
 
-            base_query = f"SELECT * FROM {table}"
             filters = []
             values = []
 
-            if name_filter:
-                filters.append("name LIKE %s")
-                values.append(f"%{name_filter}%")
-            if gender_filter != "All":
-                filters.append("gender = %s")
-                values.append(gender_filter)
+            if special_type == "appointments":
+                query = """
+                    SELECT a.appointment_id, a.patient_id, p.name, p.gender, a.doctor_id, a.date, a.time, a.reason
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                """
+                if search_var.get().strip():
+                    filters.append("a.patient_id = %s")
+                    values.append(search_var.get().strip())
+                if gender_var.get() != "All":
+                    filters.append("p.gender = %s")
+                    values.append(gender_var.get())
+            elif special_type == "prescriptions":
+                query = """
+                    SELECT pr.prescription_id, pr.appointment_id, p.name, p.gender, pr.diagnosis, pr.treatment, pr.notes
+                    FROM prescriptions pr
+                    JOIN appointments a ON pr.appointment_id = a.appointment_id
+                    JOIN patients p ON a.patient_id = p.patient_id
+                """
+                if search_var.get().strip():
+                    filters.append("pr.appointment_id = %s")
+                    values.append(search_var.get().strip())
+                if gender_var.get() != "All":
+                    filters.append("p.gender = %s")
+                    values.append(gender_var.get())
+            else:
+                query = f"SELECT * FROM {table}"
+                if search_var.get().strip():
+                    filters.append("name LIKE %s")
+                    values.append(f"%{search_var.get().strip()}%")
+                if gender_var.get() != "All":
+                    filters.append("gender = %s")
+                    values.append(gender_var.get())
 
             if filters:
-                query = base_query + " WHERE " + " AND ".join(filters)
-                cursor.execute(query, tuple(values))
-            else:
-                cursor.execute(base_query)
+                query += " WHERE " + " AND ".join(filters)
 
+            cursor.execute(query, tuple(values))
             for row in cursor.fetchall():
                 tree.insert("", tk.END, values=row)
 
-        tk.Button(search_frame, text="Search", command=search, bg="#2980b9", fg="white", width=10).grid(row=0, column=4, padx=10)
-
+        tk.Button(search_frame, text="Search", command=search, bg="#2980b9", fg="white", font=("Arial", 11, "bold"), width=10).grid(row=0, column=4, padx=10)
         show_fields = (username == "admin1")
         form_row = 1
 
-        if show_fields:
+        if show_fields and special_type not in ["appointments", "prescriptions"]:
             for label, widget_type in fields:
                 if widget_type == "readonly":
                     continue
-                tk.Label(tab, text=label, bg="#f7f9fb").grid(row=form_row, column=0, padx=10, pady=5, sticky="e")
+                tk.Label(tab, text=label, bg="#e0e0e0", font=("Arial", 11)).grid(row=form_row, column=0, padx=10, pady=5, sticky="e")
                 if widget_type == "entry":
-                    e = tk.Entry(tab)
+                    e = tk.Entry(tab, font=("Arial", 11))
                 elif widget_type == "date":
                     e = DateEntry(tab, date_pattern='yyyy-mm-dd')
                 elif widget_type == "combo":
-                    e = ttk.Combobox(tab, values=["Male", "Female", "Other"])
+                    e = ttk.Combobox(tab, values=["Male", "Female", "Other"], font=("Arial", 11))
                     e.current(0)
                 elif widget_type == "text":
-                    e = tk.Text(tab, height=2, width=30)
+                    e = tk.Text(tab, height=2, width=30, font=("Arial", 11))
                 entries[label] = e
                 e.grid(row=form_row, column=1, padx=10, pady=5, sticky="w")
                 form_row += 1
@@ -236,13 +233,12 @@ def show_dashboard(username, role):
                     messagebox.showinfo("Exported", "Data exported successfully.")
             else:
                 messagebox.showinfo("No Data", "Nothing to export.")
-
         if show_fields:
             row_offset = form_row + 1
-            tk.Button(tab, text="Add", command=insert, bg="#007acc", fg="white", width=12).grid(row=row_offset, column=0, pady=10)
-            tk.Button(tab, text="Clear", command=clear, width=12).grid(row=row_offset, column=1, pady=10)
-            tk.Button(tab, text="Export CSV", command=export_csv, bg="#16a085", fg="white", width=12).grid(row=row_offset + 1, column=0, pady=5)
-            tk.Button(tab, text="Delete", command=delete, bg="tomato", fg="white", width=12).grid(row=row_offset + 1, column=1, pady=5)
+            tk.Button(tab, text="Add", command=insert, bg="#007acc", fg="white", font=("Arial", 11, "bold"), width=12).grid(row=row_offset, column=0, pady=10)
+            tk.Button(tab, text="Clear", command=clear, font=("Arial", 11, "bold"), width=12).grid(row=row_offset, column=1, pady=10)
+            tk.Button(tab, text="Export CSV", command=export_csv, bg="#16a085", fg="white", font=("Arial", 11, "bold"), width=12).grid(row=row_offset + 1, column=0, pady=5)
+            tk.Button(tab, text="Delete", command=delete, bg="tomato", fg="white", font=("Arial", 11, "bold"), width=12).grid(row=row_offset + 1, column=1, pady=5)
             tree_row = row_offset + 2
         else:
             tree_row = 2
@@ -257,43 +253,84 @@ def show_dashboard(username, role):
         def load_data():
             for row in tree.get_children():
                 tree.delete(row)
-            cursor.execute(f"SELECT * FROM {table}")
+
+            if special_type == "appointments":
+                query = """
+                    SELECT a.appointment_id, a.patient_id, p.name, p.gender, a.doctor_id, a.date, a.time, a.reason
+                    FROM appointments a
+                    JOIN patients p ON a.patient_id = p.patient_id
+                """
+            elif special_type == "prescriptions":
+                query = """
+                    SELECT pr.prescription_id, pr.appointment_id, p.name, p.gender, pr.diagnosis, pr.treatment, pr.notes
+                    FROM prescriptions pr
+                    JOIN appointments a ON pr.appointment_id = a.appointment_id
+                    JOIN patients p ON a.patient_id = p.patient_id
+                """
+            else:
+                query = f"SELECT * FROM {table}"
+
+            cursor.execute(query)
             for row in cursor.fetchall():
                 tree.insert("", tk.END, values=row)
 
         load_data()
-
+    # --- Fields Setup ---
     patient_fields = [
-        ("Student ID", "readonly"),
-        ("Name", "entry"),
-        ("DOB", "date"),
-        ("Gender", "combo"),
-        ("Contact", "entry"),
-        ("Address", "text")
+        ("id", "readonly"),
+        ("name", "entry"),
+        ("dob", "date"),
+        ("gender", "combo"),
+        ("contact", "entry"),
+        ("address", "text")
     ]
 
     doctor_fields = [
-        ("Doctor ID", "readonly"),
-        ("Name", "entry"),
-        ("Specialization", "entry"),
-        ("Phone", "entry")
+        ("id", "readonly"),
+        ("name", "entry"),
+        ("specialization", "entry"),
+        ("phone", "entry")
     ]
 
     nurse_fields = [
-        ("Nurse ID", "readonly"),
-        ("Name", "entry"),
-        ("Department", "entry"),
-        ("Phone", "entry")
+        ("id", "readonly"),
+        ("name", "entry"),
+        ("department", "entry"),
+        ("phone", "entry")
     ]
 
+    appointment_fields = [
+        ("appointment_id", "readonly"),
+        ("patient_id", "readonly"),
+        ("patient_name", "readonly"),
+        ("gender", "readonly"),
+        ("doctor_id", "readonly"),
+        ("date", "readonly"),
+        ("time", "readonly"),
+        ("reason", "readonly")
+    ]
+
+    prescription_fields = [
+        ("prescription_id", "readonly"),
+        ("appointment_id", "readonly"),
+        ("patient_name", "readonly"),
+        ("gender", "readonly"),
+        ("diagnosis", "readonly"),
+        ("treatment", "readonly"),
+        ("notes", "readonly")
+    ]
+
+    # --- Create Tabs ---
     create_form(tab_patient, patient_fields, "patients")
     create_form(tab_doctor, doctor_fields, "doctors")
     create_form(tab_nurse, nurse_fields, "nurses")
+    create_form(tab_appointment, appointment_fields, "appointments", special_type="appointments")
+    create_form(tab_prescription, prescription_fields, "prescriptions", special_type="prescriptions")
 
-    tk.Button(root, text="Logout", command=logout, bg="tomato", fg="white", width=10).pack(pady=10)
-    tk.Label(root, text=f"Logged in as: {username} ({role})", font=("Helvetica", 10), bg="#f7f9fb").pack(fill="x")
+    # --- Logout Button and Footer ---
+    tk.Button(root, text="Logout", command=logout, bg="red", fg="white", font=("Arial", 11, "bold"), width=10).pack(pady=10)
+    tk.Label(root, text=f"Logged in as: {username} ({role})", font=("Arial", 10), bg="#e0e0e0").pack(fill="x")
 
     root.mainloop()
-
 # --- Start App ---
 show_login()
